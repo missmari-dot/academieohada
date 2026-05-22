@@ -11,7 +11,7 @@
         </div>
         <div class="team-grid">
             @foreach([
-                ['D','Diabel','Fondateur & Directeur','Compabilité · Doctorant en Finance d entreprise'],
+                ['D','Diabel','Fondateur & Directeur','Compabilité · Maitre en Finance d entreprise'],
                 ['A','Aminata S.','Experte en Finance','Finance · Économie · Commerce international'],
                 ['M','Moussa K.','Expert Juridique','Droit public · Droit privé · Fiscalité'],
                 ['F','Fatou B.','Experte en Lettres','Littérature · Linguistique · Sciences de l\'éducation'],
