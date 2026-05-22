@@ -4,21 +4,21 @@
 @section('content')
 
 {{-- ═══ HERO ════════════════════════════════════════════════════════════════ --}}
-<section class="hero">
+<section class="hero bg-navy-gradient">
     <div class="hero-bg"></div>
     <div class="container hero-inner">
-        <div class="hero-content fade-in">
-            <span class="hero-badge"> Experts Sous Régionaux</span>
-            <h1 class="hero-title">
+        <div class="hero-content">
+            <span class="hero-badge fade-in">🇸🇳 Experts locaux sénégalais</span>
+            <h1 class="hero-title fade-in delay-1">
                 Votre mémoire,<br>
                 <em class="text-gradient">rédigé par des experts</em>
             </h1>
-            <p class="hero-subtitle">
+            <p class="hero-subtitle fade-in delay-2">
                 Service professionnel de rédaction académique pour les étudiants
                 des 17 pays membres de l'OHADA, de l'UEMOA et de la CEDEAO.
                 Devis gratuit en moins de 2h.
             </p>
-            <div class="hero-actions">
+            <div class="hero-actions fade-in delay-3">
                 <a href="{{ route('devis') }}" class="btn btn-orange btn-lg">
                     Demander un devis gratuit →
                 </a>
@@ -26,17 +26,20 @@
                     💬 WhatsApp
                 </a>
             </div>
-            <p class="hero-reassurance">✅ Devis sous 2h · Paiement en 2 fois · Révisions illimitées</p>
+            <p class="hero-reassurance fade-in delay-3" style="margin-top: 1rem;">✅ Devis sous 2h · Paiement en 2 fois · Révisions illimitées</p>
         </div>
-        <div class="hero-visual fade-in delay-1">
+        <div class="hero-visual fade-in delay-2">
             <div class="hero-card">
                 <p class="card-label">🎓 Mémoire Master complet</p>
+                <p class="card-price">100 000 FCFA</p>
+                <p class="card-economy">⭐ Économie de 25 000 FCFA</p>
                 <ul class="card-features">
-                    <li>80 pages de contenu expert</li>
+                    <li>80 pages</li>
                     <li>Suivi soutenance offert</li>
                     <li>Révisions illimitées</li>
-                    <li>Livraison garantie en 14 jours</li>
+                    <li>Livraison en 14 jours</li>
                 </ul>
+                <a href="{{ route('devis') }}" class="btn btn-orange btn-sm btn-full" style="margin-top: 1.5rem;">Commander maintenant →</a>
             </div>
         </div>
     </div>

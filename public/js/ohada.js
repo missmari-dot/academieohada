@@ -103,8 +103,10 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }, { threshold: 0.1 });
 
-        document.querySelectorAll('.service-card, .guarantee-item, .testimonial-card, .tarif-card').forEach(function (el) {
-            el.classList.add('fade-in');
+        document.querySelectorAll('.service-card, .guarantee-item, .testimonial-card, .tarif-card, .fade-in').forEach(function (el) {
+            if (!el.classList.contains('fade-in')) {
+                el.classList.add('fade-in');
+            }
             observer.observe(el);
         });
     }
