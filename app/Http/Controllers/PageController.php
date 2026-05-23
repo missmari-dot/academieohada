@@ -100,10 +100,9 @@ class PageController extends Controller
     private function getModificateurs(): array
     {
         return [
-            ['delai' => '3 jours',  'mod' => '+50%',  'classe' => 'urgent'],
-            ['delai' => '7 jours',  'mod' => '+25%',  'classe' => 'rapide'],
-            ['delai' => '14 jours', 'mod' => 'Normal','classe' => 'normal'],
-            ['delai' => '30 jours', 'mod' => '−10%',  'classe' => 'confort'],
+            ['delai' => '30 jours',         'mod' => '+25%',  'classe' => 'urgent'],
+            ['delai' => '4 mois (Standard)','mod' => 'Normal','classe' => 'normal'],
+            ['delai' => 'Plus de 4 mois',   'mod' => '−10%',  'classe' => 'confort'],
         ];
     }
 

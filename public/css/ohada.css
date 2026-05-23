@@ -256,7 +256,7 @@ em { color: var(--orange); font-style: italic; }
 .tarif-price span{ font-size: .9rem; font-weight: 400; }
 .tarif-economy   { font-size: .8rem; color: var(--green); font-weight: 600; margin-bottom: 1rem; }
 
-.delai-grid      { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+.delai-grid      { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
 .delai-card      { border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 1.25rem; text-align: center; }
 .delai-card .delai-label { display: block; font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; color: var(--navy); }
 .delai-card .delai-mod   { display: block; font-size: 1rem; font-weight: 600; }
@@ -292,7 +292,7 @@ em { color: var(--orange); font-style: italic; }
 .form-note   { text-align: center; font-size: .8rem; color: var(--gray-400); margin-top: .75rem; }
 
 /* ── Délai selector ─────────────────────────────────────────────── */
-.delai-selector { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+.delai-selector { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
 .delai-option   { position: relative; cursor: pointer; }
 .delai-option input { position: absolute; opacity: 0; }
 .delai-option input:checked ~ * { border-color: var(--navy); }
