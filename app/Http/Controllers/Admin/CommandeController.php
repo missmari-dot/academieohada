@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\StatutCommandeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class CommandeController extends Controller
 {
@@ -73,5 +74,14 @@ class CommandeController extends Controller
         }
 
         return back()->with('success', 'Expert assigné avec succès.');
+    }
+
+    public function downloadFichierClient(Commande $commande)
+    {
+        if (!$commande->fichier_client || !Storage::exists($commande->fichier_client)) {
+            abort(404, 'Fichier client introuvable.');
+        }
+        $filename = basename($commande->fichier_client);
+        return Storage::download($commande->fichier_client, $filename);
     }
 }

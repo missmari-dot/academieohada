@@ -113,6 +113,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('/commandes/{commande}', [AdminCommande::class, 'show'])->name('commandes.show');
     Route::put('/commandes/{commande}/statut', [AdminCommande::class, 'updateStatut'])->name('commandes.statut');
     Route::put('/commandes/{commande}/assigner', [AdminCommande::class, 'assigner'])->name('commandes.assigner');
+    Route::get('/commandes/{commande}/fichier-client', [AdminCommande::class, 'downloadFichierClient'])->name('commandes.fichier-client');
 
     // Clients & Experts
     Route::get('/clients', [AdminClient::class, 'index'])->name('clients');

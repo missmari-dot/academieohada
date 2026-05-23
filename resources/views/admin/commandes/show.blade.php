@@ -33,6 +33,16 @@
                 @if($commande->options)<div class="detail-row"><span>Options</span><span>{{ implode(', ', $commande->options) }}</span></div>@endif
                 <div class="detail-row"><span>Statut actuel</span><span class="badge badge-{{ $commande->statut_color }}">{{ $commande->statut_label }}</span></div>
                 @if($commande->expert)<div class="detail-row"><span>Expert assigné</span><span>{{ $commande->expert->nom_complet }}</span></div>@endif
+                @if($commande->fichier_client)
+                <div class="detail-row">
+                    <span>Fichier client</span>
+                    <span>
+                        <a href="{{ route('admin.commandes.fichier-client', $commande) }}" class="btn btn-outline-navy btn-xs" style="padding: 2px 8px; font-size: 0.8rem;">
+                            📥 Télécharger
+                        </a>
+                    </span>
+                </div>
+                @endif
             </div>
         </div>
 

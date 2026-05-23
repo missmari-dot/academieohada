@@ -49,6 +49,7 @@ class RegisterController extends Controller
             'etablissement' => $data['etablissement'] ?? null,
             'niveau_etudes' => $data['niveau_etudes'] ?? null,
             'actif'         => true,
+            'email_verified_at' => now(),
         ]);
 
         $user->assignRole('client');
@@ -69,7 +70,7 @@ class RegisterController extends Controller
         NotificationFacade::route('mail', config('mail.from.address'))
             ->notify(new NouveauClientNotification($user));
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('client.dashboard')->with('success', 'Votre compte a été créé avec succès ! Bienvenue sur AcadémieOHADA.');
     }
 
     public function verify(EmailVerificationRequest $request)

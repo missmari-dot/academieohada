@@ -6,6 +6,7 @@ use App\Models\Commande;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class ConfirmationDevisClient extends Notification
 {
@@ -19,7 +20,7 @@ class ConfirmationDevisClient extends Notification
     {
         $url = url('/commandes/' . $this->commande->reference);
         
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->subject('📋 Votre devis AcadémieOHADA - ' . $this->commande->reference)
             ->greeting('Bonjour ' . $this->commande->client_prenom . ',')
             ->line('Merci pour votre confiance. Nous avons bien reçu votre demande de devis.')
@@ -33,5 +34,11 @@ class ConfirmationDevisClient extends Notification
             ->action('Voir les détails sur le site', $url)
             ->line('Si vous avez des questions, vous pouvez répondre à cet email.')
             ->salutation('L\'équipe AcadémieOHADA');
+
+        if ($this->commande->fichier_client && Storage::exists($this->commande->fichier_client)) {
+            $mail->attach(Storage::path($this->commande->fichier_client));
+        }
+
+        return $mail;
     }
 }
