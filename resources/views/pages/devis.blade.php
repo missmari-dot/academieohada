@@ -100,10 +100,10 @@
                                 <div class="checkbox-grid" id="parties-checkboxes">
                                     @php
                                     $partiesMaster  = ['choix_sujet'=>'Choix du sujet (5 000 — Offert si mémoire complet)','problematique'=>'Problématique (8 000)','plan'=>'Plan détaillé (5 000 — Offert si mémoire complet)','methodologie'=>'Méthodologie (10 000)','introduction'=>'Introduction (25 000)','partie1'=>'1ère Partie (50 000)','partie2'=>'2ème Partie (50 000)','conclusion'=>'Conclusion (5 000)','complet'=>'Mémoire complet (100 000 — ⭐)'];
-                                    $partiesLicence = ['choix_sujet'=>'Choix du sujet (3 000 — Offert si mémoire complet)','problematique'=>'Problématique (5 000)','plan'=>'Plan détaillé (3 000)','methodologie'=>'Méthodologie (7 000)','introduction'=>'Introduction (15 000)','partie1'=>'1ère Partie (30 000)','partie2'=>'2ème Partie (30 000)','conclusion'=>'Conclusion (7 000)','complet'=>'Mémoire complet (60 000 — ⭐)'];
+                                    $partiesLicence = ['choix_sujet'=>'Choix du sujet (3 000 — Offert si mémoire complet)','problematique'=>'Problématique (5 000)','plan'=>'Plan détaillé (3 000 — Offert si mémoire complet)','methodologie'=>'Méthodologie (7 000)','introduction'=>'Introduction (15 000)','partie1'=>'1ère Partie (30 000)','partie2'=>'2ème Partie (30 000)','conclusion'=>'Conclusion (7 000)','complet'=>'Mémoire complet (60 000 — ⭐)'];
                                     @endphp
                                     @foreach($partiesMaster as $key => $label)
-                                    <label class="checkbox-card" data-partie="{{ $key }}" data-master="{{ explode('(', explode(' ', $label)[count(explode(' ',$label))-2] ?? '0')[0] ?? 0 }}" data-licence="{{ $partiesLicence[$key] ?? '' }}">
+                                    <label class="checkbox-card" data-partie="{{ $key }}" data-master-label="{{ $label }}" data-licence-label="{{ $partiesLicence[$key] ?? '' }}">
                                         <input type="checkbox" name="parties[]" value="{{ $key }}" {{ in_array($key, old('parties', [])) ? 'checked' : '' }} onchange="updatePrices()">
                                         <span class="partie-label">{{ $label }}</span>
                                     </label>
@@ -246,6 +246,17 @@ function updatePrices() {
     const delai    = document.querySelector('input[name="delai"]:checked')?.value   || '14j';
     const parties  = [...document.querySelectorAll('input[name="parties[]"]:checked')].map(i => i.value);
     const options  = [...document.querySelectorAll('input[name="options[]"]:checked')].map(i => i.value);
+
+    // Mettre à jour les libellés visibles des cases à cocher
+    document.querySelectorAll('.checkbox-card[data-partie]').forEach(card => {
+        const labelEl = card.querySelector('.partie-label');
+        if (labelEl) {
+            const labelText = niveau === 'Master' ? card.getAttribute('data-master-label') : card.getAttribute('data-licence-label');
+            if (labelText) {
+                labelEl.textContent = labelText;
+            }
+        }
+    });
 
     let base = 0;
     const tarifs = TARIFS[niveau] || TARIFS.Master;
