@@ -3,14 +3,15 @@
 @section('page-title', 'Commande ' . $commande->reference)
 @section('sidebar-role','Administration')
 @section('sidebar-links')
-<a href="{{ route('admin.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
-<a href="{{ route('admin.commandes') }}" class="sidebar-link active">📋 Commandes</a>
-<a href="{{ route('admin.candidatures') }}" class="sidebar-link">👤 Candidatures</a>
-<a href="{{ route('admin.messages') }}" class="sidebar-link">✉️ Messages</a>
-<a href="{{ route('admin.reclamations') }}" class="sidebar-link">⚠️ Réclamations</a>
-<a href="{{ route('admin.clients') }}" class="sidebar-link">👥 Clients</a>
-<a href="{{ route('admin.experts') }}" class="sidebar-link">🎓 Experts</a>
-<a href="{{ route('admin.statistiques') }}" class="sidebar-link">📈 Statistiques</a>
+<a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
+<a href="{{ route('admin.commandes') }}" class="sidebar-link {{ request()->routeIs('admin.commandes*') ? 'active':'' }}">📋 Commandes @if(isset($badges['devis']) && $badges['devis'])<span class="badge-pill">{{ $badges['devis'] }}</span>@endif</a>
+<a href="{{ route('admin.candidatures') }}" class="sidebar-link {{ request()->routeIs('admin.candidatures*') ? 'active':'' }}">👤 Candidatures @if(isset($badges['candidatures']) && $badges['candidatures'])<span class="badge-pill">{{ $badges['candidatures'] }}</span>@endif</a>
+<a href="{{ route('admin.messages') }}" class="sidebar-link {{ request()->routeIs('admin.messages*') ? 'active':'' }}">✉️ Messages @if(isset($badges['messages']) && $badges['messages'])<span class="badge-pill">{{ $badges['messages'] }}</span>@endif</a>
+<a href="{{ route('admin.reclamations') }}" class="sidebar-link {{ request()->routeIs('admin.reclamations*') ? 'active':'' }}">⚠️ Réclamations @if(isset($badges['reclamations']) && $badges['reclamations'])<span class="badge-pill">{{ $badges['reclamations'] }}</span>@endif</a>
+<a href="{{ route('admin.clients.index') }}" class="sidebar-link {{ request()->routeIs('admin.clients*') ? 'active':'' }}">👥 Clients</a>
+<a href="{{ route('admin.experts.index') }}" class="sidebar-link {{ request()->routeIs('admin.experts*') ? 'active':'' }}">🎓 Experts</a>
+<a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active':'' }}">⚙️ Administrateurs</a>
+<a href="{{ route('admin.statistiques') }}" class="sidebar-link {{ request()->routeIs('admin.statistiques') ? 'active':'' }}">📈 Statistiques</a>
 @endsection
 @section('content')
 <div class="detail-layout">
@@ -20,7 +21,7 @@
             <h3>📋 Détails</h3>
             <div class="detail-grid">
                 <div class="detail-row"><span>Référence</span><strong>{{ $commande->reference }}</strong></div>
-                <div class="detail-row"><span>Client</span><span>{{ $commande->client?->nom_complet }} — {{ $commande->client?->email }}</span></div>
+                <div class="detail-row"><span>Client</span><span>{{ $commande->client_name }} — {{ $commande->client_email }}</span></div>
                 <div class="detail-row"><span>Service</span><span>{{ $commande->service }} {{ $commande->niveau ? "({$commande->niveau})" : '' }}</span></div>
                 <div class="detail-row"><span>Sujet</span><span>{{ $commande->sujet }}</span></div>
                 @if($commande->filiere)<div class="detail-row"><span>Filière</span><span>{{ $commande->filiere }}</span></div>@endif
@@ -93,16 +94,14 @@
         </div>
 
         {{-- Contact client --}}
-        @if($commande->client)
         <div class="detail-card">
             <h4>📱 Contacter le client</h4>
-            <p>{{ $commande->client->email }}</p>
-            <p>{{ $commande->client->telephone }}</p>
-            @if($commande->client->telephone)
-            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $commande->client->telephone) }}?text={{ rawurlencode('Bonjour, concernant votre commande '.$commande->reference.' — AcadémieOHADA') }}" target="_blank" class="btn btn-outline-navy btn-full btn-sm mt-1">💬 WhatsApp</a>
+            <p>{{ $commande->client_email }}</p>
+            <p>{{ $commande->client_telephone }}</p>
+            @if($commande->client_telephone)
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $commande->client_telephone) }}?text={{ rawurlencode('Bonjour, concernant votre commande '.$commande->reference.' — AcadémieOHADA') }}" target="_blank" class="btn btn-outline-navy btn-full btn-sm mt-1">💬 WhatsApp</a>
             @endif
         </div>
-        @endif
 
         <a href="{{ route('admin.commandes') }}" class="btn btn-outline-navy btn-full btn-sm">← Retour liste</a>
     </div>

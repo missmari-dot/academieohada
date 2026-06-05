@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
-@section('title','Clients')
-@section('page-title','Gestion des clients')
+@section('title','Utilisateurs & Administrateurs')
+@section('page-title','Gestion des utilisateurs')
 @section('sidebar-role','Administration')
 @section('sidebar-links')
 <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
@@ -16,48 +16,56 @@
 @section('content')
 <div class="section-header-row mb-2">
     <form method="GET" class="filters-bar" style="margin-bottom: 0;">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un client..." class="form-input filter-input">
-        <button type="submit" class="btn btn-outline-navy btn-sm">Rechercher</button>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher..." class="form-input filter-input">
+        <select name="role" class="form-select filter-select" onchange="this.form.submit()">
+            <option value="">Tous les rôles</option>
+            @foreach($roles as $r)
+            <option value="{{ $r->name }}" {{ request('role') === $r->name ? 'selected':'' }}>{{ ucfirst($r->name) }}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-outline-navy btn-sm">Filtrer</button>
     </form>
-    <a href="{{ route('admin.clients.create') }}" class="btn btn-orange btn-sm">+ Ajouter un client</a>
+    <a href="{{ route('admin.users.create') }}" class="btn btn-orange btn-sm">+ Ajouter un utilisateur</a>
 </div>
 <div class="table-wrapper">
     <table class="data-table">
-        <thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Établissement</th><th>Commandes</th><th>Inscrit le</th><th>Statut</th><th>Action</th></tr></thead>
+        <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Inscrit le</th><th>Actions</th></tr></thead>
         <tbody>
-            @forelse($clients as $c)
+            @forelse($users as $u)
             <tr>
-                <td><strong>{{ $c->nom_complet }}</strong></td>
-                <td>{{ $c->email }}</td>
-                <td>{{ $c->pays ?? '—' }}</td>
-                <td>{{ $c->etablissement ?? '—' }}</td>
-                <td>{{ $c->commandes()->count() }}</td>
-                <td>{{ $c->created_at->format('d/m/Y') }}</td>
+                <td><strong>{{ $u->nom_complet }}</strong></td>
+                <td>{{ $u->email }}</td>
                 <td>
-                    <span class="badge {{ $c->actif ? 'badge-green' : 'badge-red' }}">{{ $c->actif ? 'Actif' : 'Bloqué' }}</span>
+                    @foreach($u->roles as $role)
+                        <span class="badge badge-gray">{{ ucfirst($role->name) }}</span>
+                    @endforeach
                 </td>
+                <td><span class="badge {{ $u->actif ? 'badge-green':'badge-red' }}">{{ $u->actif ? 'Actif':'Bloqué' }}</span></td>
+                <td>{{ $u->created_at->format('d/m/Y') }}</td>
                 <td>
                     <div style="display: flex; gap: 5px;">
-                        <a href="{{ route('admin.clients.show', $c) }}" class="btn btn-outline-navy btn-xs">Voir</a>
-                        <a href="{{ route('admin.clients.edit', $c) }}" class="btn btn-outline-navy btn-xs">✏️</a>
-                        <form method="POST" action="{{ route('admin.clients.toggle-bloque', $c) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $c->actif ? 'bloquer' : 'débloquer' }} ce client ?');">
+                        <a href="{{ route('admin.users.show', $u) }}" class="btn btn-outline-navy btn-xs">Voir</a>
+                        <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-outline-navy btn-xs">✏️</a>
+                        @if($u->id !== auth()->id())
+                        <form method="POST" action="{{ route('admin.users.toggle-bloque', $u) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $u->actif ? 'bloquer' : 'débloquer' }} cet utilisateur ?');">
                             @csrf @method('PUT')
                             <button type="submit" class="btn btn-outline-navy btn-xs">
-                                {{ $c->actif ? '🚫' : '✅' }}
+                                {{ $u->actif ? '🚫' : '✅' }}
                             </button>
                         </form>
-                        <form method="POST" action="{{ route('admin.clients.destroy', $c) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce client ?');">
+                        <form method="POST" action="{{ route('admin.users.destroy', $u) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn btn-outline-navy btn-xs text-red">🗑️</button>
                         </form>
+                        @endif
                     </div>
                 </td>
             </tr>
             @empty
-            <tr><td colspan="7" class="text-center">Aucun client.</td></tr>
+            <tr><td colspan="6" class="text-center">Aucun utilisateur.</td></tr>
             @endforelse
         </tbody>
     </table>
-    {{ $clients->links() }}
+    {{ $users->links() }}
 </div>
 @endsection

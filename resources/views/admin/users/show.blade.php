@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('title', $user->nom_complet)
-@section('page-title', 'Expert — ' . $user->nom_complet)
+@section('page-title', 'Utilisateur : ' . $user->nom_complet)
 @section('sidebar-role','Administration')
 @section('sidebar-links')
 <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
@@ -23,45 +23,38 @@
             </div>
             <div class="detail-grid">
                 <div class="detail-row"><span>Téléphone</span><span>{{ $user->telephone ?? '—' }}</span></div>
-                <div class="detail-row"><span>Pays</span><span>{{ $user->pays ?? '—' }}</span></div>
-                <div class="detail-row"><span>Commandes totales</span><span>{{ $commandes->count() }}</span></div>
-                <div class="detail-row"><span>Livrées</span><span>{{ $commandes->where('statut','livre')->count() }}</span></div>
-                <div class="detail-row"><span>Actives</span><span>{{ $commandes->whereIn('statut',['confirme','en_redaction','revision'])->count() }}</span></div>
-                <div class="detail-row"><span>Statut</span><span class="badge {{ $user->actif ? 'badge-green':'badge-red' }}">{{ $user->actif ? 'Actif':'Désactivé' }}</span></div>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <h3>Commandes assignées</h3>
-            @foreach($commandes->take(10) as $cmd)
-            <div class="commande-row">
-                <div class="commande-info">
-                    <span class="commande-ref">{{ $cmd->reference }}</span>
-                    <span class="commande-service">{{ $cmd->service }}</span>
+                <div class="detail-row"><span>Rôle</span>
+                    <span>
+                        @foreach($user->roles as $role)
+                            <span class="badge badge-gray">{{ ucfirst($role->name) }}</span>
+                        @endforeach
+                    </span>
                 </div>
-                <span class="badge badge-{{ $cmd->statut_color }}">{{ $cmd->statut_label }}</span>
-                <a href="{{ route('admin.commandes.show', $cmd) }}" class="btn btn-outline-navy btn-xs">Voir</a>
+                <div class="detail-row"><span>Inscrit le</span><span>{{ $user->created_at->format('d/m/Y H:i') }}</span></div>
+                <div class="detail-row"><span>Statut</span><span class="badge {{ $user->actif ? 'badge-green':'badge-red' }}">{{ $user->actif ? 'Actif':'Bloqué' }}</span></div>
             </div>
-            @endforeach
         </div>
     </div>
     <div class="detail-sidebar">
         <div class="detail-card">
             <h4>⚙️ Actions</h4>
-            <a href="{{ route('admin.experts.edit', $user) }}" class="btn btn-outline-navy btn-full btn-sm mb-2">✏️ Modifier</a>
+            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-outline-navy btn-full btn-sm mb-2">✏️ Modifier</a>
             
-            <form method="POST" action="{{ route('admin.experts.toggle-bloque', $user) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $user->actif ? 'bloquer' : 'débloquer' }} cet expert ?');">
+            @if($user->id !== auth()->id())
+            <form method="POST" action="{{ route('admin.users.toggle-bloque', $user) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $user->actif ? 'bloquer' : 'débloquer' }} cet utilisateur ?');">
                 @csrf @method('PUT')
                 <button type="submit" class="btn {{ $user->actif ? 'btn-red' : 'btn-green' }} btn-full btn-sm mb-2">
                     {{ $user->actif ? '🚫 Bloquer le compte' : '✅ Débloquer le compte' }}
                 </button>
             </form>
 
-            <form method="POST" action="{{ route('admin.experts.destroy', $user) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet expert ? Cette action est irréversible.');">
+            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ? Cette action est irréversible.');">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-outline-red btn-full btn-sm text-red mb-2" style="border-color: var(--red); color: var(--red);">🗑️ Supprimer</button>
             </form>
+            @endif
         </div>
-        <a href="{{ route('admin.experts.index') }}" class="btn btn-outline-navy btn-full btn-sm">← Retour experts</a>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-navy btn-full btn-sm">← Retour utilisateurs</a>
     </div>
 </div>
 @endsection

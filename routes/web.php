@@ -115,12 +115,16 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::put('/commandes/{commande}/assigner', [AdminCommande::class, 'assigner'])->name('commandes.assigner');
     Route::get('/commandes/{commande}/fichier-client', [AdminCommande::class, 'downloadFichierClient'])->name('commandes.fichier-client');
 
+    // Utilisateurs (Admins, etc.)
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    Route::put('/users/{user}/toggle-bloque', [\App\Http\Controllers\Admin\UserController::class, 'toggleBloque'])->name('users.toggle-bloque');
+
     // Clients & Experts
-    Route::get('/clients', [AdminClient::class, 'index'])->name('clients');
-    Route::get('/clients/{user}', [AdminClient::class, 'show'])->name('clients.show');
-    Route::get('/experts', [AdminExpert::class, 'index'])->name('experts');
-    Route::get('/experts/{user}', [AdminExpert::class, 'show'])->name('experts.show');
-    Route::put('/experts/{user}/toggle', [AdminExpert::class, 'toggleActif'])->name('experts.toggle');
+    Route::resource('clients', AdminClient::class)->parameters(['clients' => 'user']);
+    Route::put('/clients/{user}/toggle-bloque', [AdminClient::class, 'toggleBloque'])->name('clients.toggle-bloque');
+    
+    Route::resource('experts', AdminExpert::class)->parameters(['experts' => 'user']);
+    Route::put('/experts/{user}/toggle-bloque', [AdminExpert::class, 'toggleBloque'])->name('experts.toggle-bloque');
 
     // Candidatures
     Route::get('/candidatures', [AdminCandidature::class, 'index'])->name('candidatures');

@@ -3,16 +3,24 @@
 @section('page-title','Experts actifs')
 @section('sidebar-role','Administration')
 @section('sidebar-links')
-<a href="{{ route('admin.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
-<a href="{{ route('admin.commandes') }}" class="sidebar-link">📋 Commandes</a>
-<a href="{{ route('admin.candidatures') }}" class="sidebar-link">👤 Candidatures</a>
-<a href="{{ route('admin.messages') }}" class="sidebar-link">✉️ Messages</a>
-<a href="{{ route('admin.reclamations') }}" class="sidebar-link">⚠️ Réclamations</a>
-<a href="{{ route('admin.clients') }}" class="sidebar-link">👥 Clients</a>
-<a href="{{ route('admin.experts') }}" class="sidebar-link active">🎓 Experts</a>
-<a href="{{ route('admin.statistiques') }}" class="sidebar-link">📈 Statistiques</a>
+<a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
+<a href="{{ route('admin.commandes') }}" class="sidebar-link {{ request()->routeIs('admin.commandes*') ? 'active':'' }}">📋 Commandes @if(isset($badges['devis']) && $badges['devis'])<span class="badge-pill">{{ $badges['devis'] }}</span>@endif</a>
+<a href="{{ route('admin.candidatures') }}" class="sidebar-link {{ request()->routeIs('admin.candidatures*') ? 'active':'' }}">👤 Candidatures @if(isset($badges['candidatures']) && $badges['candidatures'])<span class="badge-pill">{{ $badges['candidatures'] }}</span>@endif</a>
+<a href="{{ route('admin.messages') }}" class="sidebar-link {{ request()->routeIs('admin.messages*') ? 'active':'' }}">✉️ Messages @if(isset($badges['messages']) && $badges['messages'])<span class="badge-pill">{{ $badges['messages'] }}</span>@endif</a>
+<a href="{{ route('admin.reclamations') }}" class="sidebar-link {{ request()->routeIs('admin.reclamations*') ? 'active':'' }}">⚠️ Réclamations @if(isset($badges['reclamations']) && $badges['reclamations'])<span class="badge-pill">{{ $badges['reclamations'] }}</span>@endif</a>
+<a href="{{ route('admin.clients.index') }}" class="sidebar-link {{ request()->routeIs('admin.clients*') ? 'active':'' }}">👥 Clients</a>
+<a href="{{ route('admin.experts.index') }}" class="sidebar-link {{ request()->routeIs('admin.experts*') ? 'active':'' }}">🎓 Experts</a>
+<a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active':'' }}">⚙️ Administrateurs</a>
+<a href="{{ route('admin.statistiques') }}" class="sidebar-link {{ request()->routeIs('admin.statistiques') ? 'active':'' }}">📈 Statistiques</a>
 @endsection
 @section('content')
+<div class="section-header-row mb-2">
+    <form method="GET" class="filters-bar" style="margin-bottom: 0;">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un expert..." class="form-input filter-input">
+        <button type="submit" class="btn btn-outline-navy btn-sm">Rechercher</button>
+    </form>
+    <a href="{{ route('admin.experts.create') }}" class="btn btn-orange btn-sm">+ Ajouter un expert</a>
+</div>
 <div class="table-wrapper">
     <table class="data-table">
         <thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Commandes actives</th><th>Statut</th><th>Inscrit le</th><th>Actions</th></tr></thead>
@@ -25,12 +33,21 @@
                 <td>{{ $e->commandesExpert()->whereIn('statut',['confirme','en_redaction','revision'])->count() }}</td>
                 <td><span class="badge {{ $e->actif ? 'badge-green':'badge-red' }}">{{ $e->actif ? 'Actif':'Désactivé' }}</span></td>
                 <td>{{ $e->created_at->format('d/m/Y') }}</td>
-                <td class="flex gap-1">
-                    <a href="{{ route('admin.experts.show', $e) }}" class="btn btn-outline-navy btn-xs">Voir</a>
-                    <form method="POST" action="{{ route('admin.experts.toggle', $e) }}" style="display:inline">
-                        @csrf @method('PUT')
-                        <button type="submit" class="btn btn-xs {{ $e->actif ? 'btn-outline-navy':'btn-green' }}">{{ $e->actif ? 'Désactiver':'Activer' }}</button>
-                    </form>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        <a href="{{ route('admin.experts.show', $e) }}" class="btn btn-outline-navy btn-xs">Voir</a>
+                        <a href="{{ route('admin.experts.edit', $e) }}" class="btn btn-outline-navy btn-xs">✏️</a>
+                        <form method="POST" action="{{ route('admin.experts.toggle-bloque', $e) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $e->actif ? 'bloquer' : 'débloquer' }} cet expert ?');">
+                            @csrf @method('PUT')
+                            <button type="submit" class="btn btn-outline-navy btn-xs">
+                                {{ $e->actif ? '🚫' : '✅' }}
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('admin.experts.destroy', $e) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet expert ?');">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn btn-outline-navy btn-xs text-red">🗑️</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @empty

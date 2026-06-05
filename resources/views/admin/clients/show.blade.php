@@ -3,14 +3,15 @@
 @section('page-title', $user->nom_complet)
 @section('sidebar-role','Administration')
 @section('sidebar-links')
-<a href="{{ route('admin.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
-<a href="{{ route('admin.commandes') }}" class="sidebar-link">📋 Commandes</a>
-<a href="{{ route('admin.candidatures') }}" class="sidebar-link">👤 Candidatures</a>
-<a href="{{ route('admin.messages') }}" class="sidebar-link">✉️ Messages</a>
-<a href="{{ route('admin.reclamations') }}" class="sidebar-link">⚠️ Réclamations</a>
-<a href="{{ route('admin.clients') }}" class="sidebar-link active">👥 Clients</a>
-<a href="{{ route('admin.experts') }}" class="sidebar-link">🎓 Experts</a>
-<a href="{{ route('admin.statistiques') }}" class="sidebar-link">📈 Statistiques</a>
+<a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
+<a href="{{ route('admin.commandes') }}" class="sidebar-link {{ request()->routeIs('admin.commandes*') ? 'active':'' }}">📋 Commandes @if(isset($badges['devis']) && $badges['devis'])<span class="badge-pill">{{ $badges['devis'] }}</span>@endif</a>
+<a href="{{ route('admin.candidatures') }}" class="sidebar-link {{ request()->routeIs('admin.candidatures*') ? 'active':'' }}">👤 Candidatures @if(isset($badges['candidatures']) && $badges['candidatures'])<span class="badge-pill">{{ $badges['candidatures'] }}</span>@endif</a>
+<a href="{{ route('admin.messages') }}" class="sidebar-link {{ request()->routeIs('admin.messages*') ? 'active':'' }}">✉️ Messages @if(isset($badges['messages']) && $badges['messages'])<span class="badge-pill">{{ $badges['messages'] }}</span>@endif</a>
+<a href="{{ route('admin.reclamations') }}" class="sidebar-link {{ request()->routeIs('admin.reclamations*') ? 'active':'' }}">⚠️ Réclamations @if(isset($badges['reclamations']) && $badges['reclamations'])<span class="badge-pill">{{ $badges['reclamations'] }}</span>@endif</a>
+<a href="{{ route('admin.clients.index') }}" class="sidebar-link {{ request()->routeIs('admin.clients*') ? 'active':'' }}">👥 Clients</a>
+<a href="{{ route('admin.experts.index') }}" class="sidebar-link {{ request()->routeIs('admin.experts*') ? 'active':'' }}">🎓 Experts</a>
+<a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active':'' }}">⚙️ Administrateurs</a>
+<a href="{{ route('admin.statistiques') }}" class="sidebar-link {{ request()->routeIs('admin.statistiques') ? 'active':'' }}">📈 Statistiques</a>
 @endsection
 @section('content')
 <div class="detail-layout">
@@ -48,7 +49,23 @@
         </div>
     </div>
     <div class="detail-sidebar">
-        <a href="{{ route('admin.clients') }}" class="btn btn-outline-navy btn-full btn-sm">← Retour clients</a>
+        <div class="detail-card">
+            <h4>⚙️ Actions</h4>
+            <a href="{{ route('admin.clients.edit', $user) }}" class="btn btn-outline-navy btn-full btn-sm mb-2">✏️ Modifier</a>
+            
+            <form method="POST" action="{{ route('admin.clients.toggle-bloque', $user) }}" onsubmit="return confirm('Voulez-vous vraiment {{ $user->actif ? 'bloquer' : 'débloquer' }} ce client ?');">
+                @csrf @method('PUT')
+                <button type="submit" class="btn {{ $user->actif ? 'btn-red' : 'btn-green' }} btn-full btn-sm mb-2">
+                    {{ $user->actif ? '🚫 Bloquer le compte' : '✅ Débloquer le compte' }}
+                </button>
+            </form>
+
+            <form method="POST" action="{{ route('admin.clients.destroy', $user) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.');">
+                @csrf @method('DELETE')
+                <button type="submit" class="btn btn-outline-red btn-full btn-sm text-red mb-2" style="border-color: var(--red); color: var(--red);">🗑️ Supprimer</button>
+            </form>
+        </div>
+        <a href="{{ route('admin.clients.index') }}" class="btn btn-outline-navy btn-full btn-sm">← Retour clients</a>
     </div>
 </div>
 @endsection

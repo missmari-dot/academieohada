@@ -182,11 +182,7 @@
                         <div class="envoi-selector">
                             <label class="envoi-option">
                                 <input type="radio" name="envoi_type" value="email" checked onchange="updateSubmitButton()">
-                                <div class="envoi-content">
-                                    <span class="envoi-icon">📧</span>
-                                    <span class="envoi-label">Par Email</span>
-                                    <span class="envoi-desc">Réponse détaillée sous 2h</span>
-                                </div>
+                                
                             </label>
                             <label class="envoi-option">
                                 <input type="radio" name="envoi_type" value="whatsapp" onchange="updateSubmitButton()">
@@ -200,9 +196,9 @@
                     </div>
 
                     <button type="submit" id="submit-btn" class="btn btn-blue btn-lg btn-full">
-                        📩 Recevoir mon devis par Email →
+                        📩 Recevoir mon devis par WhatsApp →
                     </button>
-                    <p class="form-note" id="submit-note">Une copie de votre demande vous sera envoyée instantanément.</p>
+                    
                 </form>
             </div>
 
@@ -304,11 +300,7 @@ function updateSubmitButton() {
         btn.innerHTML = '📲 Envoyer sur WhatsApp →';
         btn.className = 'btn btn-orange btn-lg btn-full';
         note.textContent = 'Vous serez redirigé vers WhatsApp avec votre devis pré-rempli.';
-    } else {
-        btn.innerHTML = '📩 Recevoir mon devis par Email →';
-        btn.className = 'btn btn-blue btn-lg btn-full';
-        note.textContent = 'Une confirmation vous sera envoyée instantanément par email.';
-    }
+    } 
 }
 
 document.addEventListener('DOMContentLoaded', () => { 

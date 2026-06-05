@@ -91,6 +91,6 @@ class CandidatureController extends Controller
         if (!Storage::exists($candidature->cv_path)) {
             abort(404, 'CV introuvable.');
         }
-        return Storage::download($candidature->cv_path, "CV_{$candidature->nom}_{$candidature->prenom}.pdf");
+        return response()->download(storage_path('app/' . $candidature->cv_path), "CV_{$candidature->nom}_{$candidature->prenom}.pdf");
     }
 }

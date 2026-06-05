@@ -6,24 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
-class ClientController extends Controller
+class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $clients = User::role('client')
+        $users = User::with('roles')
             ->when($request->search, fn($q) =>
                 $q->where('nom', 'like', '%'.$request->search.'%')
                   ->orWhere('prenom', 'like', '%'.$request->search.'%')
                   ->orWhere('email', 'like', '%'.$request->search.'%'))
-            ->latest()->paginate(20);
+            ->when($request->role, fn($q) =>
+                $q->whereHas('roles', fn($r) => $r->where('name', $request->role)))
+            ->latest()
+            ->paginate(20);
 
-        return view('admin.clients.index', compact('clients'));
+        $roles = Role::all();
+
+        return view('admin.users.index', compact('users', 'roles'));
     }
 
     public function create()
     {
-        return view('admin.clients.create');
+        $roles = Role::all();
+        return view('admin.users.create', compact('roles'));
     }
 
     public function store(Request $request)
@@ -33,6 +40,7 @@ class ClientController extends Controller
             'nom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
             'telephone' => 'nullable|string|max:30',
         ]);
 
@@ -45,32 +53,29 @@ class ClientController extends Controller
             'actif' => true,
         ]);
 
-        $user->assignRole('client');
+        $user->assignRole($data['role']);
 
-        return redirect()->route('admin.clients.index')->with('success', 'Client créé avec succès.');
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur créé avec succès.');
     }
 
     public function show(User $user)
     {
-        abort_if(!$user->hasRole('client'), 404);
-        $commandes = $user->commandes()->latest()->get();
-        return view('admin.clients.show', compact('user', 'commandes'));
+        return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        abort_if(!$user->hasRole('client'), 404);
-        return view('admin.clients.edit', compact('user'));
+        $roles = Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
-        abort_if(!$user->hasRole('client'), 404);
-
         $data = $request->validate([
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id,
+            'role' => 'required|exists:roles,name',
             'telephone' => 'nullable|string|max:30',
         ]);
 
@@ -86,22 +91,30 @@ class ClientController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        return redirect()->route('admin.clients.index')->with('success', 'Client mis à jour avec succès.');
+        $user->syncRoles([$data['role']]);
+
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
     public function destroy(User $user)
     {
-        abort_if(!$user->hasRole('client'), 404);
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
         $user->delete();
-        return redirect()->route('admin.clients.index')->with('success', 'Client supprimé.');
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur supprimé.');
     }
 
     public function toggleBloque(User $user)
     {
-        abort_if(!$user->hasRole('client'), 404);
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Vous ne pouvez pas bloquer votre propre compte.');
+        }
+
         $user->update(['actif' => !$user->actif]);
         $status = $user->actif ? 'débloqué' : 'bloqué';
 
-        return back()->with('success', "Le client a été $status.");
+        return back()->with('success', "L'utilisateur a été $status.");
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
-@section('title','Messages')
-@section('page-title','Messages de contact')
+@section('title', 'Ajouter un expert')
+@section('page-title', 'Ajouter un expert')
 @section('sidebar-role','Administration')
 @section('sidebar-links')
 <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">📊 Dashboard</a>
@@ -14,24 +14,44 @@
 <a href="{{ route('admin.statistiques') }}" class="sidebar-link {{ request()->routeIs('admin.statistiques') ? 'active':'' }}">📈 Statistiques</a>
 @endsection
 @section('content')
-<div class="table-wrapper">
-    <table class="data-table">
-        <thead><tr><th>Expéditeur</th><th>Sujet</th><th>Email</th><th>Lu</th><th>Date</th><th>Action</th></tr></thead>
-        <tbody>
-            @forelse($messages as $msg)
-            <tr class="{{ !$msg->lu ? 'row-unread' : '' }}">
-                <td><strong>{{ $msg->prenom }} {{ $msg->nom }}</strong></td>
-                <td>{{ Str::limit($msg->sujet, 50) }}</td>
-                <td>{{ $msg->email }}</td>
-                <td>{{ $msg->lu ? '✅' : '🔴 Nouveau' }}</td>
-                <td>{{ $msg->created_at->format('d/m/Y H:i') }}</td>
-                <td><a href="{{ route('admin.messages.show', $msg) }}" class="btn btn-outline-navy btn-xs">Lire</a></td>
-            </tr>
-            @empty
-            <tr><td colspan="6" class="text-center">Aucun message.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-    {{ $messages->links() }}
+<div class="dashboard-section" style="max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ route('admin.experts.store') }}" class="form-container">
+        @csrf
+        
+        <div class="form-group">
+            <label class="form-label">Prénom *</label>
+            <input type="text" name="prenom" class="form-input" value="{{ old('prenom') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Nom *</label>
+            <input type="text" name="nom" class="form-input" value="{{ old('nom') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" name="email" class="form-input" value="{{ old('email') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-input" value="{{ old('telephone') }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Mot de passe *</label>
+            <input type="password" name="password" class="form-input" required minlength="8">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Confirmer le mot de passe *</label>
+            <input type="password" name="password_confirmation" class="form-input" required minlength="8">
+        </div>
+
+        <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-orange">Enregistrer</button>
+            <a href="{{ route('admin.experts.index') }}" class="btn btn-outline-navy">Annuler</a>
+        </div>
+    </form>
 </div>
 @endsection

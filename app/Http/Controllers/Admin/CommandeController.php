@@ -82,6 +82,6 @@ class CommandeController extends Controller
             abort(404, 'Fichier client introuvable.');
         }
         $filename = basename($commande->fichier_client);
-        return Storage::download($commande->fichier_client, $filename);
+        return response()->download(storage_path('app/' . $commande->fichier_client), $filename);
     }
 }

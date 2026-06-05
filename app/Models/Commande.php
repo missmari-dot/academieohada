@@ -114,7 +114,12 @@ class Commande extends Model
 
     public function getClientEmailAttribute(): string
     {
-        return $this->client ? $this->client->email : ($this->client_email ?: '');
+        return $this->client ? $this->client->email : ($this->attributes['client_email'] ?? '');
+    }
+
+    public function getClientTelephoneAttribute(): string
+    {
+        return $this->client ? $this->client->telephone : ($this->attributes['client_telephone'] ?? '');
     }
 
     public function getJoursRestantsAttribute(): int

@@ -39,7 +39,7 @@ class CommandeController extends Controller
             abort(404, 'Fichier introuvable.');
         }
 
-        return Storage::download($fichier->chemin, $fichier->nom_original);
+        return response()->download(storage_path('app/' . $fichier->chemin), $fichier->nom_original);
     }
 
     private function buildTimeline(Commande $commande): array
