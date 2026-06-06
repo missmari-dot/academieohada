@@ -20,13 +20,13 @@ class StatistiqueController extends Controller
         ];
 
         $commandesParMois = Commande::select(
-                DB::raw('MONTH(created_at) as mois'),
-                DB::raw('YEAR(created_at) as annee'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as mois'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as annee'),
                 DB::raw('COUNT(*) as total'),
                 DB::raw('SUM(montant) as ca')
             )
             ->whereYear('created_at', now()->year)
-            ->groupBy('annee', 'mois')
+            ->groupBy(DB::raw('EXTRACT(YEAR FROM created_at)'), DB::raw('EXTRACT(MONTH FROM created_at)'))
             ->orderBy('mois')
             ->get();
 

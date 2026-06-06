@@ -132,7 +132,7 @@ class DevisController extends Controller
             // Notification client (Toujours par mail)
             Notification::route('mail', $data['email'])
                 ->notify(new \App\Notifications\ConfirmationDevisClient($commande));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Ignorer l'erreur d'envoi d'email pour ne pas bloquer la redirection WhatsApp
             \Illuminate\Support\Facades\Log::error("Erreur d'envoi d'email lors du devis : " . $e->getMessage());
         }
@@ -205,3 +205,4 @@ class DevisController extends Controller
         ];
     }
 }
+dd(config('app.admin_whatsapp'));

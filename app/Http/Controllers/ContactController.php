@@ -46,7 +46,7 @@ class ContactController extends Controller
         try {
             Notification::route('mail', config('app.admin_email', config('mail.from.address')))
                 ->notify(new NouveauMessageNotification($message));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Erreur d'envoi d'email lors du contact : " . $e->getMessage());
         }
 
