@@ -43,8 +43,12 @@ class ContactController extends Controller
             route('admin.messages.show', $message)
         );
 
-        Notification::route('mail', config('app.admin_email', config('mail.from.address')))
-            ->notify(new NouveauMessageNotification($message));
+        try {
+            Notification::route('mail', config('app.admin_email', config('mail.from.address')))
+                ->notify(new NouveauMessageNotification($message));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Erreur d'envoi d'email lors du contact : " . $e->getMessage());
+        }
 
         // WhatsApp admin
         $waUrl = $this->genererWhatsApp($data);

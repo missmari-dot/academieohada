@@ -327,11 +327,7 @@ function updateSubmitButton() {
         btn.innerHTML = '📲 Envoyer sur WhatsApp →';
         btn.className = 'btn btn-orange btn-lg btn-full';
         note.textContent = 'Vous serez redirigé vers WhatsApp avec votre devis pré-rempli.';
-    } else {
-        btn.innerHTML = '📩 Recevoir mon devis par Email →';
-        btn.className = 'btn btn-blue btn-lg btn-full';
-        note.textContent = 'Une confirmation vous sera envoyée instantanément par email.';
-    }
+    } 
 }
 
 document.addEventListener('DOMContentLoaded', () => { 

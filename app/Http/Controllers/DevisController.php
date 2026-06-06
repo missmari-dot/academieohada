@@ -125,12 +125,17 @@ class DevisController extends Controller
             route('admin.commandes.show', $commande)
         );
 
-        Notification::route('mail', config('app.admin_email', 'academie.redactionohada@gmail.com'))
-            ->notify(new NouveauDevisNotification($commande, $data));
+        try {
+            Notification::route('mail', config('app.admin_email', 'academie.redactionohada@gmail.com'))
+                ->notify(new NouveauDevisNotification($commande, $data));
 
-        // Notification client (Toujours par mail)
-        Notification::route('mail', $data['email'])
-            ->notify(new \App\Notifications\ConfirmationDevisClient($commande));
+            // Notification client (Toujours par mail)
+            Notification::route('mail', $data['email'])
+                ->notify(new \App\Notifications\ConfirmationDevisClient($commande));
+        } catch (\Exception $e) {
+            // Ignorer l'erreur d'envoi d'email pour ne pas bloquer la redirection WhatsApp
+            \Illuminate\Support\Facades\Log::error("Erreur d'envoi d'email lors du devis : " . $e->getMessage());
+        }
 
         // Rediriger selon le mode choisi
         if (($data['envoi_type'] ?? 'whatsapp') === 'whatsapp') {
