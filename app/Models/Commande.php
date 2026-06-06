@@ -64,8 +64,18 @@ class Commande extends Model
         static::creating(function ($commande) {
             if (empty($commande->reference)) {
                 $annee = date('Y');
-                $dernier = static::whereYear('created_at', $annee)->count() + 1;
-                $commande->reference = 'CMD-' . $annee . '-' . str_pad($dernier, 4, '0', STR_PAD_LEFT);
+                // Récupérer la dernière commande de l'année pour éviter les conflits si des commandes ont été supprimées
+                $derniereCommande = static::whereYear('created_at', $annee)->orderBy('id', 'desc')->first();
+                
+                $numero = 1;
+                if ($derniereCommande && preg_match('/CMD-\d{4}-(\d+)/', $derniereCommande->reference, $matches)) {
+                    $numero = intval($matches[1]) + 1;
+                } elseif ($derniereCommande) {
+                    // Fallback de sécurité si la référence ne matche pas
+                    $numero = static::whereYear('created_at', $annee)->count() + 1;
+                }
+                
+                $commande->reference = 'CMD-' . $annee . '-' . str_pad($numero, 4, '0', STR_PAD_LEFT);
             }
         });
     }
