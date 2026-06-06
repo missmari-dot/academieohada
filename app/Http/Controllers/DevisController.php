@@ -80,8 +80,9 @@ class DevisController extends Controller
             'envoi_type'   => 'nullable|in:whatsapp,email',
         ]);
 
-        // Calcul du montant
-        $montant     = $this->calculerMontant($data);
+        try {
+            // Calcul du montant
+            $montant     = $this->calculerMontant($data);
         $fichierPath = null;
 
         if ($request->hasFile('fichier')) {
@@ -143,7 +144,10 @@ class DevisController extends Controller
             return redirect()->away($waUrl);
         }
 
-        return redirect()->route('accueil')->with('success', 'Votre demande de devis a été envoyée avec succès par email. Nous vous répondrons sous 2h.');
+            return redirect()->route('accueil')->with('success', 'Votre demande de devis a été envoyée avec succès par email. Nous vous répondrons sous 2h.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->with('error', 'Erreur Serveur: ' . $e->getMessage() . ' à la ligne ' . $e->getLine());
+        }
     }
 
     private function calculerMontant(array $data): int
