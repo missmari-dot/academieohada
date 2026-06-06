@@ -205,4 +205,3 @@ class DevisController extends Controller
         ];
     }
 }
-dd(config('app.admin_whatsapp'));
