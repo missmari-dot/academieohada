@@ -33,9 +33,9 @@ class CandidatureController extends Controller
             'annees_experience'    => 'required|in:0-1,1-3,3-5,5+',
             'services_proposes'    => 'nullable|array',
             'disponibilite'        => 'required|in:Temps plein,Temps partiel,Week-end',
-            'cv'                   => 'required|file|mimes:pdf|max:5120',
-            'lettre'               => 'nullable|file|mimes:pdf|max:5120',
-            'travaux'              => 'nullable|file|mimes:pdf,docx,doc|max:5120',
+            'cv'                   => 'required|file|mimes:pdf|max:10240',
+            'lettre'               => 'nullable|file|mimes:pdf|max:10240',
+            'travaux'              => 'nullable|file|mimes:pdf,docx,doc|max:10240',
             'password'             => ['required', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&])/'],
             'message_libre'        => 'nullable|string|max:2000',
         ], [
