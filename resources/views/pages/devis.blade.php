@@ -307,6 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePrices(); 
     toggleMemoireFields();
     updateSubmitButton();
+
+    // Validation de la taille du fichier côté client (max 10 Mo) pour éviter l'erreur 413 Nginx
+    const form = document.getElementById('devis-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const fichierInput = document.getElementById('fichier');
+            if (fichierInput && fichierInput.files.length > 0) {
+                const maxBytes = 10 * 1024 * 1024; // 10 Mo
+                if (fichierInput.files[0].size > maxBytes) {
+                    e.preventDefault();
+                    alert("⚠️ Le fichier joint est trop volumineux. Il ne doit pas dépasser 10 Mo.\nVeuillez compresser votre fichier ou choisir un fichier plus léger.");
+                    
+                    // Réinitialiser le bouton si nécessaire (au cas où il a été mis en état de chargement)
+                    const btn = document.getElementById('submit-btn');
+                    if (btn) {
+                        btn.disabled = false;
+                        updateSubmitButton(); // Restaure le texte d'origine
+                    }
+                }
+            }
+        });
+    }
 });
 </script>
 @endpush

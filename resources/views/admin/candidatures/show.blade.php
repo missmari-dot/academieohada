@@ -43,8 +43,26 @@
         </div>
         <div class="detail-card">
             <h3>📄 Documents</h3>
-            <a href="{{ route('admin.candidatures.cv', $candidature) }}" class="btn btn-outline-navy btn-sm">⬇ Télécharger le CV</a>
-            @if($candidature->lettre_path)<span class="ml-2 text-muted">Lettre disponible</span>@endif
+            <div class="mb-2">
+                <span style="display:inline-block; width:150px; font-weight:bold;">CV :</span>
+                <a href="{{ route('admin.candidatures.cv', $candidature) }}" class="btn btn-outline-navy btn-sm">⬇ Télécharger</a>
+            </div>
+            <div class="mb-2">
+                <span style="display:inline-block; width:150px; font-weight:bold;">Lettre :</span>
+                @if($candidature->lettre_path)
+                    <a href="{{ route('admin.candidatures.lettre', $candidature) }}" class="btn btn-outline-navy btn-sm">⬇ Télécharger</a>
+                @else
+                    <span class="text-muted">Non fournie</span>
+                @endif
+            </div>
+            <div>
+                <span style="display:inline-block; width:150px; font-weight:bold;">Extrait de travaux :</span>
+                @if($candidature->travaux_path)
+                    <a href="{{ route('admin.candidatures.travaux', $candidature) }}" class="btn btn-outline-navy btn-sm">⬇ Télécharger</a>
+                @else
+                    <span class="text-muted">Non fourni</span>
+                @endif
+            </div>
         </div>
     </div>
 

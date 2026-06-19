@@ -132,6 +132,8 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::put('/candidatures/{candidature}/valider', [AdminCandidature::class, 'valider'])->name('candidatures.valider');
     Route::put('/candidatures/{candidature}/refuser', [AdminCandidature::class, 'refuser'])->name('candidatures.refuser');
     Route::get('/candidatures/{candidature}/cv', [AdminCandidature::class, 'downloadCv'])->name('candidatures.cv');
+    Route::get('/candidatures/{candidature}/lettre', [AdminCandidature::class, 'downloadLettre'])->name('candidatures.lettre');
+    Route::get('/candidatures/{candidature}/travaux', [AdminCandidature::class, 'downloadTravaux'])->name('candidatures.travaux');
 
     // Messages & réclamations
     Route::get('/messages', [AdminMessage::class, 'index'])->name('messages');

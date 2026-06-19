@@ -69,3 +69,39 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const fileInputs = form.querySelectorAll('input[type="file"]');
+            let totalSize = 0;
+            const maxIndividualSize = 15 * 1024 * 1024; // 15 Mo par fichier
+            const maxTotalSize = 18 * 1024 * 1024; // 18 Mo total pour passer sous Nginx 20M
+            
+            for (let i = 0; i < fileInputs.length; i++) {
+                const input = fileInputs[i];
+                if (input.files && input.files.length > 0) {
+                    const size = input.files[0].size;
+                    totalSize += size;
+                    
+                    if (size > maxIndividualSize) {
+                        e.preventDefault();
+                        alert(`⚠️ Le fichier sélectionné est trop volumineux.\nIl ne doit pas dépasser 15 Mo.`);
+                        return;
+                    }
+                }
+            }
+            
+            if (totalSize > maxTotalSize) {
+                e.preventDefault();
+                alert(`⚠️ La taille totale de vos fichiers (${(totalSize / 1024 / 1024).toFixed(1)} Mo) dépasse la limite autorisée (18 Mo).\nVeuillez compresser vos documents.`);
+                return;
+            }
+        });
+    }
+});
+</script>
+@endpush

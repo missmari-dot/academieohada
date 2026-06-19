@@ -93,4 +93,22 @@ class CandidatureController extends Controller
         }
         return response()->download(storage_path('app/' . $candidature->cv_path), "CV_{$candidature->nom}_{$candidature->prenom}.pdf");
     }
+
+    public function downloadLettre(Candidature $candidature)
+    {
+        if (!$candidature->lettre_path || !Storage::exists($candidature->lettre_path)) {
+            abort(404, 'Lettre de motivation introuvable.');
+        }
+        $ext = pathinfo($candidature->lettre_path, PATHINFO_EXTENSION);
+        return response()->download(storage_path('app/' . $candidature->lettre_path), "Lettre_{$candidature->nom}_{$candidature->prenom}.{$ext}");
+    }
+
+    public function downloadTravaux(Candidature $candidature)
+    {
+        if (!$candidature->travaux_path || !Storage::exists($candidature->travaux_path)) {
+            abort(404, 'Extrait de travaux introuvable.');
+        }
+        $ext = pathinfo($candidature->travaux_path, PATHINFO_EXTENSION);
+        return response()->download(storage_path('app/' . $candidature->travaux_path), "Travaux_{$candidature->nom}_{$candidature->prenom}.{$ext}");
+    }
 }
