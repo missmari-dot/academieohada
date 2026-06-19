@@ -78,8 +78,12 @@ class CandidatureController extends Controller
             route('admin.candidatures.show', $candidature)
         );
 
-        Notification::route('mail', config('app.admin_email', config('mail.from.address')))
-            ->notify(new NouvelleCandidatureNotification($candidature));
+        try {
+    Notification::route('mail', config('app.admin_email', config('mail.from.address')))
+        ->notify(new NouvelleCandidatureNotification($candidature));
+} catch (\Exception $e) {
+    \Log::error('Erreur envoi email candidature: ' . $e->getMessage());
+}
 
         return redirect()->route('candidature.confirmation');
     }
